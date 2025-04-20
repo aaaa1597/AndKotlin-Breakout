@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.icu.text.Transliterator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -79,7 +78,12 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
         isRunning = false;
-        mHolder = null;
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            Log.d("aaaaa", "error2!!", e);
+        }
+        gameThread = null;
     }
 
     private class Pos {
@@ -113,6 +117,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             paint.setStyle(Paint.Style.FILL);
 
             Canvas canvas = mHolder.lockCanvas();
+            if(canvas == null) continue;
             canvas.drawColor(Color.BLACK);
             canvas.drawCircle(mCurPos.x, mCurPos.y, 50, paint);
             mHolder.unlockCanvasAndPost(canvas);
