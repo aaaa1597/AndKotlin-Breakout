@@ -14,6 +14,8 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
     private static final String PREFS = "PREFS";
     private static final String ITEM_HIGHSCORE = "ITEM_HIGHSCORE";
@@ -28,6 +30,9 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private final int FRAMERATE = 33;
     private SurfaceHolder mHolder = null;
     private Size mMaxSize = null;
+//    private Ball ball;
+//    private Paddle paddle;
+    private ArrayList<Block> blocksList;
 
     /* Viewを継承したときのお約束 */
     public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -43,7 +48,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
 //        ball = new Ball(this.getContext(), soundToggle);
 //        paddle = new Paddle();
-//        blocksList = new ArrayList<Block>();
+        blocksList = new ArrayList<Block>();
 
         scorePaint = new Paint();
         scorePaint.setColor(Color.WHITE);
@@ -105,6 +110,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
                 Log.e("aaaaa", "error!!", e);
             }
 
+            /* お試し描画 */
             mCurPos.x++;
             if(mCurPos.x > mMaxSize.getWidth())
                 mCurPos.x = 0;
@@ -120,6 +126,10 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             if(canvas == null) continue;
             canvas.drawColor(Color.BLACK);
             canvas.drawCircle(mCurPos.x, mCurPos.y, 50, paint);
+            /* お試し描画 */
+
+            
+
             mHolder.unlockCanvasAndPost(canvas);
         }
     }
