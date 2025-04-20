@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -22,7 +21,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private static final String ITEM_SOUNDONOFF = "ITEM_SOUNDONOFF";
     private static final String ITEM_NEWGAME = "ITEM_NEWGAME";
     private static boolean fst = true;
-    private Paint getReadyPaint = null;
+    private Paint mGetReadyPaint = null;
     private Paint scorePaint = null;
     private Paint turnsPaint = null;
     private boolean isRunning = false;
@@ -30,6 +29,11 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private final int FRAMERATE = 33;
     private SurfaceHolder mHolder = null;
     private Size mMaxSize = null;
+    private boolean isGameOver = false;
+    private int mScore = 0;
+    private int mLife = 0;
+    private int mDrwCount = 0;
+    private static int READY_STAGE = 66;
 //    private Ball ball;
 //    private Paddle paddle;
     private ArrayList<Block> blocksList;
@@ -52,17 +56,17 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
         scorePaint = new Paint();
         scorePaint.setColor(Color.WHITE);
-        scorePaint.setTextSize(25);
+        scorePaint.setTextSize(40);
 
         turnsPaint = new Paint();
         turnsPaint.setTextAlign(Paint.Align.RIGHT);
         turnsPaint.setColor(Color.WHITE);
-        turnsPaint.setTextSize(25);
+        turnsPaint.setTextSize(40);
 
-        getReadyPaint = new Paint();
-        getReadyPaint.setTextAlign(Paint.Align.CENTER);
-        getReadyPaint.setColor(Color.WHITE);
-        getReadyPaint.setTextSize(45);
+        mGetReadyPaint = new Paint();
+        mGetReadyPaint.setTextAlign(Paint.Align.CENTER);
+        mGetReadyPaint.setColor(Color.WHITE);
+        mGetReadyPaint.setTextSize(72);
     }
 
     @Override
@@ -128,8 +132,18 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             canvas.drawCircle(mCurPos.x, mCurPos.y, 50, paint);
             /* お試し描画 */
 
-            
+            mDrwCount++;
+            if(mDrwCount < READY_STAGE) {
+                if(isGameOver) {
+                    mGetReadyPaint.setColor(Color.RED);
+                    canvas.drawText("GAME OVER!!!", (float)canvas.getWidth() /2,(float)(canvas.getHeight()/2)-50, mGetReadyPaint);
+                }
+                mGetReadyPaint.setColor(Color.WHITE);
+                canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , mGetReadyPaint);
+            }
 
+            canvas.drawText("SCORE = "+ mScore, 0, 25, scorePaint);
+            canvas.drawText("Life: " + mLife, canvas.getWidth(), 25, turnsPaint);
             mHolder.unlockCanvasAndPost(canvas);
         }
     }
