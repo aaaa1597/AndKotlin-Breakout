@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/score"
-        android:textSize="30sp"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,22 +56,8 @@
         android:textOff="Sound OFF"
         android:textOn="Sound ON"
         app:layout_constraintTop_toBottomOf="@+id/contGameButton"
-        app:layout_constraintBottom_toTopOf="@+id/sourceTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/sourceTextView"
-        android:layout_margin="5pt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="@string/source"
-        android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@+id/soundToggleButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
