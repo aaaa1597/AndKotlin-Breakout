@@ -1,5 +1,6 @@
 package com.dhbikoff.breakout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -16,12 +17,10 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.Locale;
 
 public class SplashActivity extends AppCompatActivity {
-    private static final String HIGH_SCORE_PREF = "HIGH_SCORE_PREF";
-    private static final String SOUND_ON_OFF = "SOUND_ON_OFF";
-    private static final String SOUND_PREFS = "SOUND_PREFS";
-    private static final String NEW_GAME = "NEW_GAME";
-    private boolean soundFlg = false;
-    private int highScore = 0;
+    private static final String PREFS = "PREFS";
+    private static final String ITEM_HIGHSCORE = "ITEM_HIGHSCORE";
+    private static final String ITEM_SOUNDONOFF = "ITEM_SOUNDONOFF";
+    private static final String ITEM_NEWGAME = "ITEM_NEWGAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,55 +36,45 @@ public class SplashActivity extends AppCompatActivity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         /* NewGameボタン押下 */
         findViewById(R.id.newGameButton).setOnClickListener(view -> {
+            /* 一旦SharedPreferencesを更新 */
+            SharedPreferences.Editor prefeditor = getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+            prefeditor.putBoolean(ITEM_NEWGAME, true);
+            prefeditor.apply();
+            /* 画面遷移 */
             Intent intent = new Intent(this, GameActivity.class);
-            intent.putExtra(NEW_GAME, true);
-            intent.putExtra(SOUND_ON_OFF, soundFlg);
             startActivity(intent);
         });
         /* ContinueGameボタン押下 */
         findViewById(R.id.contGameButton).setOnClickListener(view -> {
+            /* 一旦SharedPreferencesを更新 */
+            SharedPreferences.Editor prefeditor = getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+            prefeditor.putBoolean(ITEM_NEWGAME, false);
+            prefeditor.apply();
+            /* 画面遷移 */
             Intent intent = new Intent(this, GameActivity.class);
-            intent.putExtra(NEW_GAME, false);
-            intent.putExtra(SOUND_ON_OFF, soundFlg);
             startActivity(intent);
         });
         /* 音声ON/OFFボタン押下 */
         SwitchCompat sc = findViewById(R.id.soundToggleButton);
         sc.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            soundFlg = isChecked;
+            /* SharedPreferences更新 */
+            SharedPreferences.Editor prefeditor = getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
+            prefeditor.putBoolean(ITEM_SOUNDONOFF, isChecked);
+            prefeditor.apply();
         });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences soundSettings = getSharedPreferences(SOUND_PREFS, 0);
-        soundFlg = soundSettings.getBoolean("soundOn", true);
+        SharedPreferences pref = getSharedPreferences(PREFS, 0);
+        boolean soundFlg = pref.getBoolean(ITEM_SOUNDONOFF, true);
+        int highScore = pref.getInt(ITEM_HIGHSCORE, 0);
+        /* 音声ON/OFF設定 */
         SwitchCompat soundButton = findViewById(R.id.soundToggleButton);
         soundButton.setChecked(soundFlg);
-
-        SharedPreferences scoreSettings = getSharedPreferences(HIGH_SCORE_PREF, 0);
-        highScore = scoreSettings.getInt("highScore", 0);
+        /* ハイスコア設定 */
         TextView hiScore = findViewById(R.id.hiScoreView);
         hiScore.setText(String.format(Locale.JAPAN, "High Score = %d", highScore));
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // save sound settings and high score
-        SharedPreferences soundSettings = getSharedPreferences(SOUND_PREFS, 0);
-        SharedPreferences.Editor soundEditor = soundSettings.edit();
-        soundEditor.putBoolean("soundOn", soundFlg);
-        soundEditor.apply();
-
-        SharedPreferences highScoreSave = getSharedPreferences(HIGH_SCORE_PREF, 0);
-        SharedPreferences.Editor scoreEditor = highScoreSave.edit();
-        scoreEditor.putInt("highScore", highScore);
-
-        // Commit the edits
-        scoreEditor.apply();
     }
 }

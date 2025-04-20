@@ -13,9 +13,45 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
+    private static final String PREFS = "PREFS";
+    private static final String ITEM_HIGHSCORE = "ITEM_HIGHSCORE";
+    private static final String ITEM_SOUNDONOFF = "ITEM_SOUNDONOFF";
+    private static final String ITEM_NEWGAME = "ITEM_NEWGAME";
+    private static boolean fst = true;
+    private Paint getReadyPaint = null;
+    private Paint scorePaint = null;
+    private Paint turnsPaint = null;
+
     /* Viewを継承したときのお約束 */
-    public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs) { this(context, attrs, 0);}
-    public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr);}
+    public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+    public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+    private void init() {
+        if(!fst) return;
+        fst = false;
+
+//        ball = new Ball(this.getContext(), soundToggle);
+//        paddle = new Paddle();
+//        blocksList = new ArrayList<Block>();
+
+        scorePaint = new Paint();
+        scorePaint.setColor(Color.WHITE);
+        scorePaint.setTextSize(25);
+
+        turnsPaint = new Paint();
+        turnsPaint.setTextAlign(Paint.Align.RIGHT);
+        turnsPaint.setColor(Color.WHITE);
+        turnsPaint.setTextSize(25);
+
+        getReadyPaint = new Paint();
+        getReadyPaint.setTextAlign(Paint.Align.CENTER);
+        getReadyPaint.setColor(Color.WHITE);
+        getReadyPaint.setTextSize(45);
+    }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
