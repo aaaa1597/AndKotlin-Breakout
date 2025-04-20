@@ -5,7 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.icu.text.Transliterator;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -21,6 +24,11 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private Paint getReadyPaint = null;
     private Paint scorePaint = null;
     private Paint turnsPaint = null;
+    private boolean isRunning = false;
+    private Thread gameThread = null;
+    private final int FRAMERATE = 33;
+    private SurfaceHolder mHolder = null;
+    private Size mMaxSize = null;
 
     /* Viewを継承したときのお約束 */
     public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -57,27 +65,57 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         /* ↓kotlinの時はこれがないと描画が見えなかった。 */
 //      getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        mHolder = holder;
+        isRunning = true;
+        gameThread = new Thread(this);
+        gameThread.start();
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.BLUE);
-        paint.setStyle(Paint.Style.FILL);
-
-        Canvas canvas = holder.lockCanvas();
-        canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(100, 200, 50, paint);
-        holder.unlockCanvasAndPost(canvas);
+        mMaxSize = new Size(width,height);
     }
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+        isRunning = false;
+        mHolder = null;
     }
+
+    private class Pos {
+        public int x;
+        public int y;
+        public Pos(int xpos, int ypos) {
+            x = xpos;
+            y = ypos;
+        }
+    }
+    private Pos mCurPos = new Pos(0,0);
 
     @Override
     public void run() {
+        while(isRunning) {
+            try {
+                Thread.sleep(FRAMERATE);
+            } catch (InterruptedException e) {
+                Log.e("aaaaa", "error!!", e);
+            }
 
+            mCurPos.x++;
+            if(mCurPos.x > mMaxSize.getWidth())
+                mCurPos.x = 0;
+            mCurPos.y++;
+            if(mCurPos.y > mMaxSize.getHeight())
+                mCurPos.y = 0;
+
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.BLUE);
+            paint.setStyle(Paint.Style.FILL);
+
+            Canvas canvas = mHolder.lockCanvas();
+            canvas.drawColor(Color.BLACK);
+            canvas.drawCircle(mCurPos.x, mCurPos.y, 50, paint);
+            mHolder.unlockCanvasAndPost(canvas);
+        }
     }
-
 }
