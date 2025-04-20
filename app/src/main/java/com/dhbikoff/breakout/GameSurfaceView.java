@@ -23,7 +23,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private static boolean fst = true;
     private Paint mGetReadyPaint = null;
     private Paint scorePaint = null;
-    private Paint turnsPaint = null;
+    private Paint mLifePaint = null;
     private boolean isRunning = false;
     private Thread gameThread = null;
     private final int FRAMERATE = 33;
@@ -56,12 +56,12 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
         scorePaint = new Paint();
         scorePaint.setColor(Color.WHITE);
-        scorePaint.setTextSize(40);
+        scorePaint.setTextSize(60);
 
-        turnsPaint = new Paint();
-        turnsPaint.setTextAlign(Paint.Align.RIGHT);
-        turnsPaint.setColor(Color.WHITE);
-        turnsPaint.setTextSize(40);
+        mLifePaint = new Paint();
+        mLifePaint.setTextAlign(Paint.Align.RIGHT);
+        mLifePaint.setColor(Color.WHITE);
+        mLifePaint.setTextSize(60);
 
         mGetReadyPaint = new Paint();
         mGetReadyPaint.setTextAlign(Paint.Align.CENTER);
@@ -136,14 +136,14 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             if(mDrwCount < READY_STAGE) {
                 if(isGameOver) {
                     mGetReadyPaint.setColor(Color.RED);
-                    canvas.drawText("GAME OVER!!!", (float)canvas.getWidth() /2,(float)(canvas.getHeight()/2)-50, mGetReadyPaint);
+                    canvas.drawText("GAME OVER!!!", (float)canvas.getWidth()/2,(float)(canvas.getHeight()/2)-50, mGetReadyPaint);
                 }
                 mGetReadyPaint.setColor(Color.WHITE);
                 canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , mGetReadyPaint);
             }
 
-            canvas.drawText("SCORE = "+ mScore, 0, 25, scorePaint);
-            canvas.drawText("Life: " + mLife, canvas.getWidth(), 25, turnsPaint);
+            canvas.drawText("SCORE = "+ mScore, 0, 50, scorePaint);
+            canvas.drawText("Life: " + mLife, canvas.getWidth(), 50, mLifePaint);
             mHolder.unlockCanvasAndPost(canvas);
         }
     }
