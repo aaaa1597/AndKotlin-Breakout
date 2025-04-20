@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Locale;
 
-public class Splash extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
     private static final String HIGH_SCORE_PREF = "HIGH_SCORE_PREF";
     private static final String SOUND_ON_OFF = "SOUND_ON_OFF";
     private static final String SOUND_PREFS = "SOUND_PREFS";
@@ -30,7 +27,7 @@ public class Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.splash);
+        setContentView(R.layout.activity_splash);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -40,14 +37,14 @@ public class Splash extends AppCompatActivity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         /* NewGameボタン押下 */
         findViewById(R.id.newGameButton).setOnClickListener(view -> {
-            Intent intent = new Intent(this, Breakout.class);
+            Intent intent = new Intent(this, GameActivity.class);
             intent.putExtra(NEW_GAME, true);
             intent.putExtra(SOUND_ON_OFF, soundFlg);
             startActivity(intent);
         });
         /* ContinueGameボタン押下 */
         findViewById(R.id.contGameButton).setOnClickListener(view -> {
-            Intent intent = new Intent(this, Breakout.class);
+            Intent intent = new Intent(this, GameActivity.class);
             intent.putExtra(NEW_GAME, false);
             intent.putExtra(SOUND_ON_OFF, soundFlg);
             startActivity(intent);

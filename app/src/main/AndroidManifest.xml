@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidBreakout">
         <activity
-            android:name=".Breakout"
+            android:name=".GameActivity"
             android:exported="false" />
         <activity
-            android:name=".Splash"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
