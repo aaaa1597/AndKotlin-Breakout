@@ -36,7 +36,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private int mDrwCount = 0;
     private static int READY_STAGE = 66;
 //    private Ball ball;
-//    private Paddle paddle;
+    private Paddle paddle;
     private ArrayList<Block> blocksList;
 
     /* Viewを継承したときのお約束 */
@@ -52,7 +52,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
         fst = false;
 
 //        ball = new Ball(this.getContext(), soundToggle);
-//        paddle = new Paddle();
+        paddle = new Paddle();
         blocksList = new ArrayList<Block>();
 
         scorePaint = new Paint();
