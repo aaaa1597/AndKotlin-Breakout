@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -29,7 +30,6 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     private Thread gameThread = null;
     private final int FRAMERATE = 33;
     private SurfaceHolder mHolder = null;
-    private Size mMaxSize = null;
     private boolean isGameOver = false;
     private int mScore = 0;
     private int mLife = 0;
@@ -82,7 +82,6 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-        mMaxSize = new Size(width,height);
     }
 
     @Override
@@ -104,7 +103,6 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             y = ypos;
         }
     }
-    private Pos mCurPos = new Pos(0,0);
 
     @Override
     public void run() {
@@ -115,25 +113,12 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
                 Log.e("aaaaa", "error!!", e);
             }
 
-            /* お試し描画 */
-            mCurPos.x++;
-            if(mCurPos.x > mMaxSize.getWidth())
-                mCurPos.x = 0;
-            mCurPos.y++;
-            if(mCurPos.y > mMaxSize.getHeight())
-                mCurPos.y = 0;
-
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.BLUE);
-            paint.setStyle(Paint.Style.FILL);
-
             Canvas canvas = mHolder.lockCanvas();
             if(canvas == null) continue;
-            canvas.drawColor(Color.BLACK);
-            canvas.drawCircle(mCurPos.x, mCurPos.y, 50, paint);
-            /* お試し描画 */
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
             mDrwCount++;
+            /* 準備画面 */
             if(mDrwCount < READY_STAGE) {
                 if(isGameOver) {
                     mGetReadyPaint.setColor(Color.RED);
@@ -142,11 +127,13 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
                 mGetReadyPaint.setColor(Color.WHITE);
                 canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , mGetReadyPaint);
             }
+            /* 準備画面2 */
             else if(mDrwCount == READY_STAGE) {
                 mGetReadyPaint.setColor(Color.WHITE);
                 canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , mGetReadyPaint);
                 initObjects(canvas);
             }
+            /* Play画面 */
             else {
                 /* ブロック描画 */
                 for(Block item : blocksList)
