@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -141,10 +142,49 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
                 mGetReadyPaint.setColor(Color.WHITE);
                 canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , mGetReadyPaint);
             }
+            else if(mDrwCount == READY_STAGE) {
+                mGetReadyPaint.setColor(Color.WHITE);
+                canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , mGetReadyPaint);
+                initObjects(canvas);
+            }
+            else {
+                /* ブロック描画 */
+                for(Block item : blocksList)
+                    item.drawBlock(canvas);
+            }
 
             canvas.drawText("SCORE = "+ mScore, 0, 50, scorePaint);
             canvas.drawText("Life: " + mLife, canvas.getWidth(), 50, mLifePaint);
             mHolder.unlockCanvasAndPost(canvas);
+        }
+    }
+
+    private void initObjects(Canvas canvas) {
+//        ball.initCoords(canvas.getWidth(), canvas.getHeight());
+//        paddle.initCoords(canvas.getWidth(), canvas.getHeight());
+        initBlocks(canvas);
+    }
+
+    private void initBlocks(Canvas canvas) {
+        int blockHeight = canvas.getWidth() / 36;
+        int spacing = canvas.getWidth() / 144;
+        int topOffset = canvas.getHeight() / 10;
+        int blockWidth = (canvas.getWidth() / 10) - spacing;
+
+        for (int idxy = 0; idxy < 10; idxy++) {
+            for (int idxx = 0; idxx < 10; idxx++) {
+                int y_coordinate = (idxy * (blockHeight + spacing)) + topOffset;
+                int x_coordinate = idxx * (blockWidth + spacing);
+
+                Rect r = new Rect();
+                r.set(x_coordinate, y_coordinate, x_coordinate + blockWidth, y_coordinate + blockHeight);
+
+                if(idxy < 2)      blocksList.add(new Block(r, Color.RED));
+                else if(idxy < 4) blocksList.add(new Block(r, Color.YELLOW));
+                else if(idxy < 6) blocksList.add(new Block(r, Color.GREEN));
+                else if(idxy < 8) blocksList.add(new Block(r, Color.MAGENTA));
+                else              blocksList.add(new Block(r, Color.LTGRAY));
+            }
         }
     }
 }
