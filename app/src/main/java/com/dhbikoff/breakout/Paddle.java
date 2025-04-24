@@ -39,18 +39,18 @@ public class Paddle extends ShapeDrawable {
     }
 
     public void draw(Canvas canvas) {
-        this.setBounds(left, top, right, bottom);
-        this.draw(canvas);
+        super.setBounds(left, top, right, bottom);
+        super.draw(canvas);
     }
 
-    public void move(int x) {
-        if (x >= left && x <= right) {
-            left  = x - paddle_width;
-            right = x + paddle_width;
-        } else if (x > right) {
+    public void move(int eventX) {
+        if (left <= eventX && eventX <= right) {
+            left  = eventX - paddle_width;
+            right = eventX + paddle_width;
+        } else if (right < eventX) {
             left += paddle_move_offset;
             right+= paddle_move_offset;
-        } else if (x < left) {
+        } else if (eventX < left) {
             left -= paddle_move_offset;
             right-= paddle_move_offset;
         }

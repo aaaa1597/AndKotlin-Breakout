@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public interface Stage {
     Stage prepare(int screenW, int screenH);
-    void update();
+    void update(float eventX);
     void draw(Canvas canvas);
 }
 
@@ -63,7 +63,7 @@ class OpeningStage implements Stage {
         paint.setTextSize(72);
         return this;
     }
-    @Override public void update() {/*何もしない*/}
+    @Override public void update(float eventX) {/*何もしない*/}
     @Override
     public void draw(Canvas canvas) {
         canvas.drawText("GET READY...",(float)canvas.getWidth()/2, (float)(canvas.getHeight()/2) , paint);
@@ -86,7 +86,7 @@ class BuildStage implements Stage {
     }
 
     @Override
-    public void update() {
+    public void update(float eventX) {
     }
 
     @Override
@@ -143,9 +143,9 @@ class PlayStage implements Stage {
     }
 
     @Override
-    public void update() {
-//        /* パドル移動 */
-//        paddle.move((int)eventX);
+    public void update(float eventX) {
+        /* パドル移動 */
+        paddle.move((int)eventX);
     }
 
     @Override
@@ -153,6 +153,8 @@ class PlayStage implements Stage {
         /* ブロック描画 */
         for(Block item : blocksList)
             item.draw(canvas);
+        /* パドル描画 */
+        paddle.draw(canvas);
 
         canvas.drawText("SCORE = "+ score, 0, 50, scorePaint);
         canvas.drawText("Life: " + life, canvas.getWidth(), 50, lifePaint);
@@ -173,7 +175,7 @@ class ClosingStage implements Stage {
         return this;
     }
 
-    @Override public void update() {/*何もしない*/}
+    @Override public void update(float eventX) {/*何もしない*/}
     @Override
     public void draw(Canvas canvas) {
         canvas.drawText("GAME OVER!!!", (float)canvas.getWidth()/2,(float)(canvas.getHeight()/2)-50, paint);
