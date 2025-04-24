@@ -24,4 +24,11 @@ public class GameActivity extends AppCompatActivity {
         GameSurfaceView sv = findViewById(R.id.surfaceview);
         sv.getHolder().addCallback(sv);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        GameSurfaceView sv = findViewById(R.id.surfaceview);
+        sv.getHolder().removeCallback(sv);
+    }
 }

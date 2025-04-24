@@ -18,7 +18,7 @@ public class Block extends ShapeDrawable {
         blockColor = color;
     }
 
-    public void drawBlock(Canvas canvas) {
+    public void draw(Canvas canvas) {
         canvas.drawRect(this.getBounds(), paint);
     }
 
