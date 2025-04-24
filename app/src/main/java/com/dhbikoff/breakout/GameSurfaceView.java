@@ -3,7 +3,9 @@ package com.dhbikoff.breakout;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,6 +14,10 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
     private static final String PREFS = "PREFS";
@@ -41,6 +47,12 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+        /* ジェスチャバックを無効化 */
+        List<Rect> rectlist = new ArrayList<>();
+        rectlist.add(new Rect(0, height-650, width, height-450));
+        rectlist.add(new Rect(0, height-450, width, height-250));
+        rectlist.add(new Rect(0, height-250, width, height-50));
+        setSystemGestureExclusionRects(rectlist);
     }
 
     @Override
@@ -72,7 +84,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
             mDrwCount++;
             Stage drawstage = DrawStageFactory.getDrawStage(mDrwCount, canvas.getWidth(), canvas.getHeight());
-            drawstage.update();
+            drawstage.update(eventX);
             drawstage.draw(canvas);
 
             mHolder.unlockCanvasAndPost(canvas);
