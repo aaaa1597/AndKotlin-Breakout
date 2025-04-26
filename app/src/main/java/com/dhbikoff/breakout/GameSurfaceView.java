@@ -3,7 +3,6 @@ package com.dhbikoff.breakout;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -16,20 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
-    private static final String PREFS = "PREFS";
-    private static final String ITEM_HIGHSCORE = "ITEM_HIGHSCORE";
-    private static final String ITEM_SOUNDONOFF = "ITEM_SOUNDONOFF";
-    private static final String ITEM_NEWGAME = "ITEM_NEWGAME";
     private boolean isRunning = false;
     private Thread gameThread = null;
-    private final int FRAMERATE = 33;
     private SurfaceHolder mHolder = null;
-    private boolean isGameOver = false;
     private float eventX = 0f;
+    private boolean mSoundFlg = false;
 
     /* Viewを継承したときのお約束 */
     public GameSurfaceView(@NonNull Context context, @Nullable AttributeSet attrs) { this(context, attrs, 0); }
@@ -39,14 +32,16 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         /* ↓kotlinの時はこれがないと描画が見えなかった。 */
 //      getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        mHolder = holder;
-        isRunning = true;
-        gameThread = new Thread(this);
-        gameThread.start();
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+        /* 描画開始 */
+        PhaseManager.init(getContext(), mSoundFlg, width, height);
+        mHolder = holder;
+        isRunning = true;
+        gameThread = new Thread(this);
+        gameThread.start();
         /* ジェスチャバックを無効化 */
         List<Rect> rectlist = new ArrayList<>();
         rectlist.add(new Rect(0, height-650, width, height-450));
@@ -68,10 +63,9 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
 
     @Override
     public void run() {
-        int mDrwCount = 0;
-
         while(isRunning) {
             try {
+                final int FRAMERATE = 33;
                 Thread.sleep(FRAMERATE);
             } catch (InterruptedException e) {
                 Log.e("aaaaa", "error!!", e);
@@ -82,10 +76,9 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             /* 一旦全消去 */
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-            mDrwCount++;
-            Stage drawstage = DrawStageFactory.getDrawStage(mDrwCount, canvas.getWidth(), canvas.getHeight());
-            drawstage.update(eventX);
-            drawstage.draw(canvas);
+            PhaseBase drawPhase = PhaseManager.getPhase();
+            drawPhase.update(eventX);
+            drawPhase.draw(canvas);
 
             mHolder.unlockCanvasAndPost(canvas);
         }
@@ -105,5 +98,9 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
             return true;
         }
         return false;
+    }
+
+    public void setSoundFlg(boolean soundFlg) {
+        mSoundFlg = soundFlg;
     }
 }

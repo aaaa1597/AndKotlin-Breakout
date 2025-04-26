@@ -1,5 +1,6 @@
 package com.dhbikoff.breakout;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,6 +10,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class GameActivity extends AppCompatActivity {
+    private static final String PREFS = "PREFS";
+    private static final String ITEM_HIGHSCORE = "ITEM_HIGHSCORE";
+    private static final String ITEM_SOUNDONOFF = "ITEM_SOUNDONOFF";
+    private static final String ITEM_NEWGAME = "ITEM_NEWGAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +26,12 @@ public class GameActivity extends AppCompatActivity {
             return insets;
         });
 
+        /* 設定値取得 */
+        SharedPreferences pref = getSharedPreferences(PREFS, 0);
+        boolean soundFlg = pref.getBoolean(ITEM_SOUNDONOFF, true);
+
         GameSurfaceView sv = findViewById(R.id.surfaceview);
+        sv.setSoundFlg(soundFlg);
         sv.getHolder().addCallback(sv);
     }
 
