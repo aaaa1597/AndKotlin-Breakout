@@ -169,6 +169,10 @@ class PlayPhase implements PhaseBase {
             gameoverFlg = true;
         /* パドル移動 */
         paddle.move((int)eventX);
+        /* コリジョンチェック(ボール-パドル) */
+        ball.checkPaddleCollision(paddle);
+        /* コリジョンチェック(ボール-ブロックs) */
+        score += ball.checkBlocksCollision(blocksList);
     }
 
     @Override
