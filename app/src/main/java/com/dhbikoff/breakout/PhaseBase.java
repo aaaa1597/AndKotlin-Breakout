@@ -111,14 +111,14 @@ class BuildPhase implements PhaseBase {
                 int y_coordinate = (idxy * (blockHeight + spacing)) + topOffset;
                 int x_coordinate = idxx * (blockWidth + spacing);
 
-                Rect r = new Rect();
-                r.set(x_coordinate, y_coordinate, x_coordinate + blockWidth, y_coordinate + blockHeight);
+                Rect rect = new Rect();
+                rect.set(x_coordinate, y_coordinate, x_coordinate + blockWidth, y_coordinate + blockHeight);
 
-                if(idxy < 2)      blocksList.add(new Block(r, Color.RED));
-                else if(idxy < 4) blocksList.add(new Block(r, Color.YELLOW));
-                else if(idxy < 6) blocksList.add(new Block(r, Color.GREEN));
-                else if(idxy < 8) blocksList.add(new Block(r, Color.MAGENTA));
-                else              blocksList.add(new Block(r, Color.LTGRAY));
+                if(idxy < 2)      blocksList.add(new Block(rect, Color.RED));
+                else if(idxy < 4) blocksList.add(new Block(rect, Color.YELLOW));
+                else if(idxy < 6) blocksList.add(new Block(rect, Color.GREEN));
+                else if(idxy < 8) blocksList.add(new Block(rect, Color.MAGENTA));
+                else              blocksList.add(new Block(rect, Color.LTGRAY));
             }
         }
     }

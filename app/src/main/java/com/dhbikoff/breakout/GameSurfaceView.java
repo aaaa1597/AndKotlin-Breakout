@@ -65,7 +65,7 @@ public class GameSurfaceView extends SurfaceView implements Runnable, SurfaceHol
     public void run() {
         while(isRunning) {
             try {
-                final int FRAMERATE = 33;
+                final int FRAMERATE = 15;
                 Thread.sleep(FRAMERATE);
             } catch (InterruptedException e) {
                 Log.e("aaaaa", "error!!", e);

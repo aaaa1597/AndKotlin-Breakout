@@ -68,24 +68,19 @@ public class Ball extends ShapeDrawable {
         SCREEN_HEIGHT  = height;
 
         radius    = SCREEN_WIDTH / 72;
-        velocityX = radius;
-        velocityY = radius * 2;
+        velocityX = radius/2;
+        velocityY = radius;
 
         // ball coordinates
-        left  = (SCREEN_WIDTH / 2) - radius;
-        right = (SCREEN_WIDTH / 2) + radius;
-        top   = (SCREEN_HEIGHT / 2) - radius;
-        bottom= (SCREEN_HEIGHT / 2) + radius;
+        left  = (SCREEN_WIDTH  / 2) - radius;
+        right = (SCREEN_WIDTH  / 2) + radius;
+        top   = (int)(SCREEN_HEIGHT/ 2.5) - radius;
+        bottom= (int)(SCREEN_HEIGHT/ 2.5) + radius;
 
         int startingXDirection = rnd.nextInt(2); // random beginning direction
         if (startingXDirection > 0) {
             velocityX = -velocityX;
         }
-    }
-
-    public void draw(Canvas canvas) {
-        super.setBounds(left, top, right, bottom);
-        super.draw(canvas);
     }
 
     public int updateCoordinates() {
@@ -95,22 +90,21 @@ public class Ball extends ShapeDrawable {
         if (paddleCollision && velocityY > 0) {
             int paddleSplit = (mPaddle.right - mPaddle.left) / 4;
             int ballCenter = ballRect.centerX();
-            if (ballCenter < mPaddle.left + paddleSplit) {
+            if (ballCenter < mPaddle.left + paddleSplit)
                 velocityX = -(radius * 3);
-            } else if (ballCenter < mPaddle.left + (paddleSplit * 2)) {
+            else if (ballCenter < mPaddle.left + (paddleSplit * 2))
                 velocityX = -(radius * 2);
-            } else if (ballCenter < mPaddle.centerX() + paddleSplit) {
+            else if (ballCenter < mPaddle.centerX() + paddleSplit)
                 velocityX = radius * 2;
-            } else {
+            else
                 velocityX = radius * 3;
-            }
             velocityY = -velocityY;
         }
 
         // side walls collision
-        if (this.getBounds().right >= SCREEN_WIDTH) {
+        if (this.getBounds().right >= SCREEN_WIDTH)
             velocityX = -velocityX;
-        } else if (this.getBounds().left <= 0) {
+        else if (this.getBounds().left <= 0) {
             this.setBounds(0, top, radius * 2, bottom);
             velocityX = -velocityX;
         }
@@ -140,7 +134,12 @@ public class Ball extends ShapeDrawable {
         return lifeDamage;
     }
 
-    public boolean checkPaddleCollision(Paddle paddle) {
+    public void draw(Canvas canvas) {
+        super.setBounds(left, top, right, bottom);
+        super.draw(canvas);
+    }
+
+    public void checkPaddleCollision(Paddle paddle) {
         mPaddle = paddle.getBounds();
         ballRect = this.getBounds();
 
@@ -155,18 +154,16 @@ public class Ball extends ShapeDrawable {
         } else
             paddleCollision = false;
 
-        return paddleCollision;
+        return;
     }
 
     public int checkBlocksCollision(ArrayList<Block> blocks) {
-        int points = 0;
-        int blockListLength = blocks.size();
         ballRect = this.getBounds();
 
-        int ballLeft = ballRect.left + velocityX;
-        int ballRight = ballRect.right + velocityY;
-        int ballTop = ballRect.top + velocityY;
-        int ballBottom = ballRect.bottom + velocityY;
+        int nextBallLeft  = ballRect.left  + velocityX;
+        int nextBallRight = ballRect.right + velocityY;
+        int nextBallTop   = ballRect.top   + velocityY;
+        int nextBallBottom= ballRect.bottom+ velocityY;
 
         /* コリジョン処理 */
         Function<Integer, Function<Integer, Integer>> collided = (color) -> (idx) -> {
@@ -178,31 +175,32 @@ public class Ball extends ShapeDrawable {
             return getPoints(color);
         };
 
-        // check collision; remove block if true
+        /* コリジョン判定 */
         for(ListIterator<Block> it = blocks.listIterator(blocks.size()); it.hasPrevious();) {
-            Block block = it.previous();
             int idx = it.previousIndex();
+            Block block = it.previous();
             Rect blockRect = block.getBounds();
             int color = block.getColor();
 
-            if(        ballLeft >= blockRect.left  - (radius * 2)
-                    && ballLeft <= blockRect.right + (radius * 2)
-                    && (ballTop == blockRect.bottom || ballTop == blockRect.top)) {
+            if(        nextBallLeft >= blockRect.left
+                    && nextBallLeft <= blockRect.right
+                    && nextBallTop  <= blockRect.bottom
+                    && nextBallTop  >= blockRect.top) {
                 return collided.apply(color).apply(idx);
-            } else if (ballRight <= blockRect.right
-                    && ballRight >= blockRect.left
-                    && ballTop   <= blockRect.bottom
-                    && ballTop   >= blockRect.top) {
+            } else if (nextBallRight <= blockRect.right
+                    && nextBallRight >= blockRect.left
+                    && nextBallTop   <= blockRect.bottom
+                    && nextBallTop   >= blockRect.top) {
                 return collided.apply(color).apply(idx);
-            } else if (ballLeft   >= blockRect.left
-                    && ballLeft   <= blockRect.right
-                    && ballBottom <= blockRect.bottom
-                    && ballBottom >= blockRect.top) {
+            } else if (nextBallLeft   >= blockRect.left
+                    && nextBallLeft   <= blockRect.right
+                    && nextBallBottom <= blockRect.bottom
+                    && nextBallBottom >= blockRect.top) {
                 return collided.apply(color).apply(idx);
-            } else if (ballRight  <= blockRect.right
-                    && ballRight  >= blockRect.left
-                    && ballBottom <= blockRect.bottom
-                    && ballBottom >= blockRect.top) {
+            } else if (nextBallRight  <= blockRect.right
+                    && nextBallRight  >= blockRect.left
+                    && nextBallBottom <= blockRect.bottom
+                    && nextBallBottom >= blockRect.top) {
                 return collided.apply(color).apply(idx);
             }
         }

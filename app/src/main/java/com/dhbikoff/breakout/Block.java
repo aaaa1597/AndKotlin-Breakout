@@ -7,15 +7,13 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 
 public class Block extends ShapeDrawable {
-    private Paint paint;
-    private int blockColor;
+    private final Paint paint;
 
     public Block(Rect rect, int color) {
         super(new RectShape());
         this.setBounds(rect);
         paint = new Paint();
         paint.setColor(color);
-        blockColor = color;
     }
 
     public void draw(Canvas canvas) {
@@ -25,12 +23,4 @@ public class Block extends ShapeDrawable {
     public int getColor() {
         return paint.getColor();
     }
-    public int[] toIntArray() {
-        Rect rect = getBounds();
-        if(paint.getColor() != blockColor)
-            throw new RuntimeException("aaaaaa paint.getColor() != blockColorやし!!");
-        int[] arr = { rect.left, rect.top, rect.right, rect.bottom, blockColor };
-        return arr;
-    }
-
 }
