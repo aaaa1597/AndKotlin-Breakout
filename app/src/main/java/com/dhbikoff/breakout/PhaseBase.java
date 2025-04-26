@@ -20,6 +20,7 @@ class PhaseManager {
     static BuildPhase buildPhase;
     static PlayPhase playPhase;
     static ClosingPhase closingPhase;
+    static ClaarPhase clearPhase;
     static PhaseBase currentPhase = new NonePhase();
 
     public static void init(Context context, boolean soundflg, int screenW, int screenH) {
@@ -27,6 +28,7 @@ class PhaseManager {
         buildPhase = new BuildPhase(context, soundflg, screenW, screenH);
         playPhase = new PlayPhase();
         closingPhase = new ClosingPhase();
+        clearPhase = new ClaarPhase();
         currentPhase = openingPhase;
     }
 
@@ -153,7 +155,11 @@ class PlayPhase implements PhaseBase {
 
     @Override
     public PhaseBase prepare() {
-        if(!gameoverFlg)
+        if(blocksList.isEmpty()) {
+            gameoverFlg = false;
+            return PhaseManager.clearPhase;
+        }
+        else if(!gameoverFlg)
             return this;
         else {
             gameoverFlg = false;
@@ -187,6 +193,24 @@ class PlayPhase implements PhaseBase {
 
         canvas.drawText("SCORE = "+ score, 0, 50, scorePaint);
         canvas.drawText("Life: " + lifeGauge, canvas.getWidth(), 50, lifePaint);
+    }
+}
+
+/** ClaarStage **/
+class ClaarPhase implements PhaseBase {
+    final Paint paint = new Paint();
+    public ClaarPhase() {
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(72);
+        paint.setColor(Color.GREEN);
+    }
+
+    @Override public PhaseBase prepare() { return this; }
+    @Override public void update(float eventX) {/*何もしない*/}
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawText("Game Cleared!", (float)canvas.getWidth()/2,(float)(canvas.getHeight()/2)-50, paint);
+        canvas.drawText("Good Gob!!!", (float)canvas.getWidth()/2,(float)(canvas.getHeight()/2)-50+72, paint);
     }
 }
 

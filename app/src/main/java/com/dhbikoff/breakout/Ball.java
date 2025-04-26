@@ -88,13 +88,21 @@ public class Ball extends ShapeDrawable {
 
         // paddle collision
         if (paddleCollision && velocityY > 0) {
-            int paddleSplit = (mPaddle.right - mPaddle.left) / 4;
+            int paddleSplit = (mPaddle.right - mPaddle.left) / 10;
             int ballCenter = ballRect.centerX();
             if (ballCenter < mPaddle.left + paddleSplit)
                 velocityX = -(radius * 3);
             else if (ballCenter < mPaddle.left + (paddleSplit * 2))
                 velocityX = -(radius * 2);
-            else if (ballCenter < mPaddle.centerX() + paddleSplit)
+            else if (mPaddle.left + (paddleSplit * 2) <= ballCenter &&
+                     ballCenter <= (mPaddle.left+mPaddle.right)/2) {
+                velocityX = -radius;
+            }
+            else if ((mPaddle.left+mPaddle.right)/2 <= ballCenter &&
+                    ballCenter <= mPaddle.right - (paddleSplit * 2)) {
+                velocityX = radius;
+            }
+            else if (ballCenter < mPaddle.right - (paddleSplit * 2))
                 velocityX = radius * 2;
             else
                 velocityX = radius * 3;
