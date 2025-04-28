@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Android-Breakout"
+rootProject.name = "AndKotin-Breakout"
 include(":app")
+ 

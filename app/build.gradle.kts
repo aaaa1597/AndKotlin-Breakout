@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.dhbikoff.breakout"
+    namespace = "com.aaa.breakout"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.dhbikoff.breakout"
+        applicationId = "com.aaa.breakout"
         minSdk = 33
         targetSdk = 34
         versionCode = 1

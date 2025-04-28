@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".GameActivity">
 
-    <com.dhbikoff.breakout.GameSurfaceView
+    <com.aaa.breakout.GameSurfaceView
         android:id="@+id/surfaceview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
