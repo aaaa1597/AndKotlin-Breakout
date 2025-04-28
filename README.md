@@ -8,3 +8,5 @@
   - Koala 2024.1.1 patch1対応
   - 中身の設計はだいぶいろいろ違う。
   - kotlinで再作成。
+
+    <img src="001.png" width="300">&emsp;&emsp;&emsp;<img src="002.png" width="300">
