@@ -10,8 +10,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.aaa.breakout.PhaseManager.init
-import com.aaa.breakout.PhaseManager.phase
 
 const val FRAMERATE = 15
 
@@ -34,7 +32,7 @@ class GameSurfaceView: SurfaceView, Runnable, SurfaceHolder.Callback {
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         /* 描画開始 */
-        init(context, mSoundFlg, width, height)
+        PhaseManager.init(mSoundFlg, width, height)
         mHolder = holder
         isRunning = true
         gameThread = Thread(this)
@@ -69,7 +67,7 @@ class GameSurfaceView: SurfaceView, Runnable, SurfaceHolder.Callback {
             /* 一旦全消去 */
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
 
-            val drawPhase = phase
+            val drawPhase = PhaseManager.getNextPhase(context)
             drawPhase.update(eventX)
             drawPhase.draw(canvas)
 

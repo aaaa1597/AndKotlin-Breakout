@@ -9,7 +9,7 @@ import android.graphics.Rect
 const val OPENING_PHASE_PERIOD = 66
 
 interface PhaseBase {
-    fun prepare(): PhaseBase
+    fun prepare(context: Context): PhaseBase
     fun update(eventX: Float)
     fun draw(canvas: Canvas)
 }
@@ -23,24 +23,23 @@ internal object PhaseManager {
     lateinit var clearPhase: ClearPhase
     private var currentPhase: PhaseBase = NonePhase()
 
-    fun init(context: Context, soundFlg: Boolean, screenW: Int, screenH: Int) {
+    fun init(soundFlg: Boolean, screenW: Int, screenH: Int) {
         openingPhase= OpeningPhase()
-        buildPhase  = BuildPhase(context, soundFlg, screenW, screenH)
+        buildPhase  = BuildPhase(soundFlg, screenW, screenH)
         playPhase   = PlayPhase()
         closingPhase= ClosingPhase()
         clearPhase  = ClearPhase()
         currentPhase= openingPhase
     }
 
-    val phase: PhaseBase
-        get() {
-            currentPhase = currentPhase.prepare()
-            return currentPhase
-        }
+    fun getNextPhase(context: Context): PhaseBase {
+        currentPhase = currentPhase.prepare(context)
+        return currentPhase
+    }
 
     /** NonePhase(何もしないフェーズ)  */
     class NonePhase : PhaseBase {
-        override fun prepare(): PhaseBase { return this }
+        override fun prepare(context: Context): PhaseBase { return this }
         override fun update(eventX: Float) {}
         override fun draw(canvas: Canvas) {}
     }
@@ -57,7 +56,7 @@ internal object PhaseManager {
         }
 
         /* 準備 */
-        override fun prepare(): PhaseBase {
+        override fun prepare(context: Context): PhaseBase {
             phaseCounter++
             if (phaseCounter < OPENING_PHASE_PERIOD) return this
             else phaseCounter = 0
@@ -78,19 +77,17 @@ internal object PhaseManager {
 
     /** BuildStage  */
     class BuildPhase /* コンストラクタ */(
-        private var mContext: Context?,
         private val mSoundFlg: Boolean,
         private val mScreenW: Int,
         private val mScreenH: Int
     ) : PhaseBase {
         /* 準備 */
-        override fun prepare(): PhaseBase {
-            val ball   = Ball(mContext!!, mSoundFlg).apply { init(mScreenW, mScreenH) }
+        override fun prepare(context: Context): PhaseBase {
+            val ball   = Ball(context, mSoundFlg).apply { init(mScreenW, mScreenH) }
             val paddle = Paddle().apply { init(mScreenW, mScreenH) }
             val blocksList: ArrayList<Block> = ArrayList()
             initBlocks(mScreenW, mScreenH, blocksList)
             playPhase.setParams(ball, paddle, blocksList)
-            mContext = null
             return playPhase
         }
 
@@ -146,7 +143,7 @@ internal object PhaseManager {
             this.blocksList = blocksList
         }
 
-        override fun prepare(): PhaseBase {
+        override fun prepare(context: Context): PhaseBase {
             if (blocksList.isEmpty()) {
                 gameoverFlg = false
                 return clearPhase
@@ -191,7 +188,7 @@ internal object PhaseManager {
                                         textSize = 72f
                                         color = Color.GREEN
                                     }
-        override fun prepare(): PhaseBase { return this }
+        override fun prepare(context: Context): PhaseBase { return this }
         override fun update(eventX: Float) { /*何もしない*/ }
         override fun draw(canvas: Canvas) {
             canvas.drawText( "Game Cleared!", canvas.width.toFloat() / 2, (canvas.height / 2).toFloat() - 50, paint )
@@ -207,7 +204,7 @@ internal object PhaseManager {
                                             color = Color.RED
                                         }
 
-        override fun prepare(): PhaseBase { return this }
+        override fun prepare(context: Context): PhaseBase { return this }
         override fun update(eventX: Float) { /*何もしない*/ }
         override fun draw(canvas: Canvas)
             = canvas.drawText("GAME OVER!!!", canvas.width.toFloat() / 2, (canvas.height / 2).toFloat() - 50, paint)
